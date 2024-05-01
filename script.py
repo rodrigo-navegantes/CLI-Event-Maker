@@ -1,5 +1,6 @@
-import datetime
+from datetime import datetime
 import os
+import sys
 
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -54,15 +55,26 @@ def main():
     # Get credentials and build service (same as before)
     creds = get_credentials()
     service = build('calendar', 'v3', credentials=creds)
-   
+    
     # Define event details
-    summary = input("Summary: ")
-    location = input("Location: ")
-    description = input("Description: ")
-    start_datetime = input("Start Time: ")
-    end_datetime = input("End Time: ")    
+    
+    summary = sys.argv[1]
+    location = sys.argv[2]
+    description = sys.argv[3]
+    start_datetime = sys.argv[4]
+    end_datetime = sys.argv[5]
+
+    start_datetime = datetime.strptime(f"{start_datetime}", '%d-%m-%Y %H:%M')
+    end_datetime = datetime.strptime(f"{end_datetime}", '%d-%m-%Y %H:%M')
+
+    # Convert to ISO format
+    
+    iso_start_datetime = start_datetime.isoformat() 
+    iso_end_datetime = end_datetime.isoformat()
+
     # Create the event
-    create_event(service, summary, location, description, start_datetime, end_datetime)
+
+    create_event(service, summary, location, description, iso_start_datetime, iso_end_datetime)
 
 if __name__ == '__main__':
     main()
